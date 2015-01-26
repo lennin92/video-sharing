@@ -1,0 +1,71 @@
+<html>
+<head>
+    <meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<title>{{ video.title }}</title>
+    <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.1/yeti/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/0.5.8/perfect-scrollbar.min.css">
+	<link rel="stylesheet" type="text/css" href="/static/controlize-0.1.2.min.css">
+</head>
+<body>
+<h1>{{ video.title }}</h1>
+
+<div class="row" style="background-color: #090909; padding: 0.5%; max-height: 450px !important;">
+    <div class="col-xs-8">
+        <video id="video-{{ video.video_id }}" style="max-width: 700px; max-height: 430px">
+            <source type="video/{{ videos.mimetype }}" src="/vids/video/{{ video.video_id }}/get/{{ videos.mimetype }}">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+    <div class="col-xs-4" style="color:gainsboro; max-height: 430px">
+        <h4>
+            {{ video.owner.username }}
+        </h4>
+        <h5>Published: {{ video.publish_date }}</h5>
+        <div style="overflow:hidden;" id="video-{{ video.video_id }}-description">
+            <p style="font-size: small;">{{ video.description }}</p>
+        </div>
+    </div>
+</div>
+
+<div id="comments">
+<div class="row">
+    <div class="col-xs-8 col-xs-offset-2">
+        <form method="post">
+            {% csrf_token %}
+            {{ comment_form }}
+            <input type="submit" />
+        </form>
+    </div>
+</div>
+{% for c in comments %}
+    <div class="row">
+    <div class="col-xs-8 col-xs-offset-2">
+        <h5>{{ c.author }}</h5>
+        <p>{{ c.comment_text }}</p>
+        {% for c_c in c.comment_set.all %}
+        <div class="row">
+        <div class="col-xs-8 col-xs-offset-2">
+            <h6>{{ c_c.author }}</h6>
+            <p>{{ c_c.comment_text }}</p>
+        </div>
+        </div>
+        {% endfor %}
+
+    </div>
+    </div>
+{% endfor %}
+
+</div>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/0.5.8/perfect-scrollbar.min.js"></script>
+<script src="/static/controlize-0.1.2.min.js"></script>
+<script type="text/javascript">
+	controlize(document.getElementById('video-{{ video.video_id }}'));
+    $('#video-{{ video.video_id }}-description').perfectScrollbar();
+</script>
+</body>
+</html>
